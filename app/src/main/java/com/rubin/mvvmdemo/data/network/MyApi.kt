@@ -17,13 +17,22 @@ interface MyApi {
         @Field("password") password: String
     ): Response<AuthResponse>
 
+    @FormUrlEncoded
+    @POST("signup")
+    suspend fun userSignUp(
+        @Field("name") name: String,
+        @Field("email") email: String,
+        @Field("password") password: String
+    ): Response<AuthResponse>
+
     companion object {
         operator fun invoke(networkConnectionInterceptor: NetworkConnectionInterceptor): MyApi {
-            val okkHttpclient = OkHttpClient.Builder()
+            val okHttpclient = OkHttpClient.Builder()
                 .addInterceptor(networkConnectionInterceptor)
                 .build()
 
             return Retrofit.Builder()
+                .client(okHttpclient)
                 .baseUrl("https://api.simplifiedcoding.in/course-apis/mvvm/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
